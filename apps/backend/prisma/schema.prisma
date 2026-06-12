@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  address   String   @unique
+  createdAt DateTime @default(now())
+  wallets   Wallet[]
+}
+
+model Wallet {
+  id                  String       @id @default(cuid())
+  userId              String
+  ownerEoa            String
+  smartAccountAddress String
+  chainId             Int          @default(11155111)
+  createdAt           DateTime     @default(now())
+  user                User         @relation(fields: [userId], references: [id])
+  delegations         Delegation[]
+  campaigns           Campaign[]
+}
+
+model Delegation {
+  id                  String   @id @default(cuid())
+  walletId            String
+  ownerEoa            String
+  smartAccountAddress String
+  limits              Json
+  policy              Json
+  active              Boolean  @default(true)
+  grantedAt           DateTime @default(now())
+  expiresAt           DateTime
+  wallet              Wallet   @relation(fields: [walletId], references: [id])
+}
+
+model Campaign {
+  id               String       @id @default(cuid())
+  walletId         String?
+  creatorAddress   String
+  title            String
+  description      String
+  category         String
+  rules            Json
+  rulesHash        String
+  rewardUsdc       Float
+  budgetUsdc       Float
+  maxParticipants  Int
+  participantCount Int          @default(0)
+  deadline         DateTime
+  status           String       @default("active")
+  onChainId        Int?
+  escrowBalance      Float        @default(0)
+  platformFeeUsdc    Float        @default(1)
+  platformFeeTxHash  String?
+  createdAt          DateTime     @default(now())
+  wallet           Wallet?      @relation(fields: [walletId], references: [id])
+  submissions      Submission[]
+}
+
+model Submission {
+  id                  String        @id @default(cuid())
+  campaignId          String
+  participantAddress  String
+  proof               Json
+  status              String        @default("pending")
+  aiScore             Float?
+  aiReason            String?
+  txHash              String?
+  onChainSubmissionId Int?
+  createdAt           DateTime      @default(now())
+  campaign            Campaign      @relation(fields: [campaignId], references: [id])
+  verification        Verification?
+  transaction         Transaction?
+}
+
+model Verification {
+  id               String     @id @default(cuid())
+  submissionId     String     @unique
+  approved         Boolean
+  score            Float
+  quality          String
+  requirementMatch Float
+  authenticity     Float
+  spamRisk         String
+  reason           String
+  createdAt        DateTime   @default(now())
+  submission       Submission @relation(fields: [submissionId], references: [id])
+}
+
+model Transaction {
+  id           String     @id @default(cuid())
+  submissionId String     @unique
+  wallet       String
+  amount       Float
+  status       String
+  txHash       String?
+  createdAt    DateTime   @default(now())
+  submission   Submission @relation(fields: [submissionId], references: [id])
+}
+
+model AgentDecision {
+  id        String   @id @default(cuid())
+  role      String
+  input     Json
+  output    Json
+  createdAt DateTime @default(now())
+}

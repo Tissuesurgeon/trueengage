@@ -1,0 +1,34 @@
+{
+  "name": "trueengage",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Autonomous AI-Powered Creator Engagement Marketplace",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "vitest run",
+    "demo": "node scripts/demo-flow.mjs",
+    "test:packages": "turbo run test",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "db:generate": "pnpm --filter @trueengage/backend run db:generate",
+    "db:migrate": "pnpm --filter @trueengage/backend run db:migrate",
+    "db:push": "cp .env apps/backend/.env 2>/dev/null; pnpm --filter @trueengage/backend run db:push",
+    "contracts:test": "cd apps/contracts && forge test -vv",
+    "contracts:deploy": "bash -c 'set -a && source .env && set +a && cd apps/contracts && forge script script/Deploy.s.sol --rpc-url \"${SEPOLIA_RPC_URL:-https://ethereum-sepolia-rpc.publicnode.com}\" --broadcast'",
+    "contracts:deploy-escrow": "bash -c 'set -a && source .env && set +a && cd apps/contracts && forge script script/DeployEscrow.s.sol --rpc-url \"${SEPOLIA_RPC_URL:-https://ethereum-sepolia-rpc.publicnode.com}\" --broadcast'"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "prettier": "^3.4.2",
+    "prettier-plugin-solidity": "^1.4.1",
+    "tsx": "^4.19.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="TrueEngage">
+  <rect width="180" height="180" rx="40" fill="#ffffff"/>
+  <rect x="18" y="18" width="108" height="108" rx="32" fill="#6B21A8"/>
+  <rect x="54" y="54" width="108" height="108" rx="32" stroke="#0a0a0a" stroke-width="10" fill="none"/>
+</svg>

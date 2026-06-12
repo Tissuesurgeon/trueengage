@@ -1,0 +1,37 @@
+{
+  "name": "@trueengage/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:push": "prisma db push",
+    "db:reset": "node scripts/reset-app-data.mjs"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.1.0",
+    "@trueengage/ai-engine": "workspace:*",
+    "@trueengage/campaign-engine": "workspace:*",
+    "@trueengage/execution-engine": "workspace:*",
+    "@trueengage/shared": "workspace:*",
+    "@trueengage/smart-account-engine": "workspace:*",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1",
+    "viem": "^2.21.54",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "prisma": "^6.1.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

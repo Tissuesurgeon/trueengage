@@ -1,0 +1,173 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-from: #6366f1;
+  --color-brand-to: #8b5cf6;
+  --color-brand: #7c6cf6;
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 3px 10px rgba(15, 23, 42, 0.06);
+  --shadow-card-hover: 0 4px 6px rgba(15, 23, 42, 0.05), 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+:root {
+  --color-logo-purple: #6b21a8;
+  --color-logo-true: #0a0a0a;
+  --color-logo-stroke: #0a0a0a;
+  --color-bg-app: #f8fafc;
+  --color-bg-surface: #ffffff;
+  --color-bg-surface-2: #f1f5f9;
+  --color-bg-elevated: #e2e8f0;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94a3b8;
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+  --color-accent-glow: rgba(99, 102, 241, 0.08);
+}
+
+.dark {
+  --color-logo-true: #f1f5f9;
+  --color-logo-stroke: #020617;
+  --color-bg-app: #070a12;
+  --color-bg-surface: #0e1320;
+  --color-bg-surface-2: #141b2c;
+  --color-bg-elevated: #1a2236;
+  --color-text-primary: #e8edf6;
+  --color-text-secondary: #aab4c8;
+  --color-text-muted: #6b7689;
+  --color-border: #20293c;
+  --color-border-strong: #2c3650;
+  --color-accent-glow: rgba(124, 108, 246, 0.12);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg-app);
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background:
+    radial-gradient(900px 500px at 85% -15%, var(--color-accent-glow), transparent 60%),
+    var(--color-bg-app);
+  background-attachment: fixed;
+}
+
+.dark body {
+  background:
+    radial-gradient(1200px 600px at 80% -10%, var(--color-accent-glow), transparent 60%),
+    var(--color-bg-app);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(124, 108, 246, 0.25);
+  color: var(--color-text-primary);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.logo-engage {
+  color: var(--color-logo-purple);
+  -webkit-text-stroke: 1px var(--color-logo-stroke);
+  paint-order: stroke fill;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-strong);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-brand);
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-surface-2) 25%,
+    var(--color-bg-elevated) 50%,
+    var(--color-bg-surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-fade-in-up,
+  .animate-gradient,
+  .animate-shimmer {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

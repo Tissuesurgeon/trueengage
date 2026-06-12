@@ -1,0 +1,11 @@
+node_modules
+dist
+.next
+.turbo
+.env
+.env.local
+*.log
+apps/contracts/out
+apps/contracts/cache
+apps/contracts/broadcast
+apps/contracts/lib

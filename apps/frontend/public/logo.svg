@@ -1,0 +1,7 @@
+<svg width="220" height="48" viewBox="0 0 220 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TrueEngage">
+  <text x="0" y="34" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="28" font-weight="700">
+    <tspan fill="#0a0a0a">True</tspan><tspan fill="#6B21A8" stroke="#0a0a0a" stroke-width="1.2" paint-order="stroke fill">Engage</tspan>
+  </text>
+  <rect x="168" y="6" width="30" height="30" rx="9" fill="#6B21A8"/>
+  <rect x="180" y="18" width="30" height="30" rx="9" stroke="#0a0a0a" stroke-width="3" fill="none"/>
+</svg>
