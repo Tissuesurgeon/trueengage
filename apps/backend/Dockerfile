@@ -32,6 +32,9 @@ RUN pnpm exec prisma generate
 WORKDIR /app
 RUN pnpm turbo run build --filter=@trueengage/backend...
 RUN pnpm deploy --filter @trueengage/backend --prod /prod/backend
+RUN cp -r /app/apps/backend/prisma /prod/backend/prisma
+WORKDIR /prod/backend
+RUN npx prisma generate --schema=./prisma/schema.prisma
 
 FROM base AS runner
 ENV NODE_ENV=production
