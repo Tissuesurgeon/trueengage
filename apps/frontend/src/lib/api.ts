@@ -1,3 +1,5 @@
+import type { SubmissionTransaction } from './submission-payment';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
@@ -114,8 +116,8 @@ export const api = {
     request<
       Array<
         import('@trueengage/shared').Submission & {
-          verification?: unknown;
-          transaction?: unknown;
+          verification?: import('@trueengage/shared').VerificationResult;
+          transaction?: SubmissionTransaction | null;
         }
       >
     >(`/submissions${campaignId ? `?campaignId=${campaignId}` : ''}`),
