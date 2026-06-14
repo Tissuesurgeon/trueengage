@@ -50,6 +50,24 @@ Deploy the backend first so you have a public API URL for Vercel.
 
 ### 1.2 Configure the backend service
 
+**Option A — Dockerfile (recommended)**
+
+1. Railway service → **Settings** → **Build** → set **Builder** to **Dockerfile**.
+2. **Dockerfile path:** `apps/backend/Dockerfile`
+3. **Root Directory:** leave empty (repository root — required for pnpm workspaces).
+4. Generate a public domain under **Networking**.
+
+The image builds all workspace packages, runs `prisma db push` on container start, then starts the API. See [`apps/backend/Dockerfile`](apps/backend/Dockerfile).
+
+Local test:
+
+```bash
+docker build -f apps/backend/Dockerfile -t trueengage-backend .
+docker run --rm -p 4000:4000 --env-file .env trueengage-backend
+```
+
+**Option B — Nixpacks (no Docker)**
+
 Open the **GitHub-connected service** (not the database service) and set:
 
 | Setting | Value |
@@ -57,7 +75,7 @@ Open the **GitHub-connected service** (not the database service) and set:
 | **Root Directory** | *(leave empty — repo root)* |
 | **Watch Paths** | `apps/backend/**`, `packages/**` |
 
-**Build command:**
+**Build command** (Option B only):
 
 ```bash
 pnpm install --frozen-lockfile && pnpm turbo run build --filter=@trueengage/backend...
@@ -65,7 +83,7 @@ pnpm install --frozen-lockfile && pnpm turbo run build --filter=@trueengage/back
 
 The `...` suffix tells Turbo to build `@trueengage/backend` and all workspace dependencies (`shared`, `ai-engine`, `execution-engine`, etc.).
 
-**Start command:**
+**Start command** (Option B only):
 
 ```bash
 pnpm --filter @trueengage/backend start
@@ -73,13 +91,13 @@ pnpm --filter @trueengage/backend start
 
 `prestart` runs `prisma db push` automatically before the server starts, so tables are created on first deploy.
 
-**Release command** (optional alternative to `prestart`):
+**Release command** (Option B only — optional; Dockerfile runs `db push` on container start):
 
 ```bash
 pnpm --filter @trueengage/backend db:push
 ```
 
-> Use either `prestart` (default) or a Railway **Deploy** release command — not both unless you want schema push twice.
+> With **Option A (Dockerfile)**, schema is applied automatically in `docker-entrypoint.sh`. With **Option B**, use `prestart` or a release command.
 
 Railway sets **`PORT`** automatically. The backend reads `process.env.PORT` (default `4000` locally).
 
@@ -291,7 +309,19 @@ TrueEngage also works with [Render](https://render.com) Postgres. Use the **Exte
 
 Not required, but you can commit these at the repo root for reproducible deploys.
 
-**`railway.toml`** (Nixpacks):
+**`railway.toml`** (Dockerfile deploy — recommended):
+
+```toml
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "apps/backend/Dockerfile"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 120
+```
+
+**`railway.toml`** (Nixpacks deploy):
 
 ```toml
 [build]

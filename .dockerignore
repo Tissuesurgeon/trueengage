@@ -1,0 +1,15 @@
+node_modules
+**/node_modules
+.next
+**/dist
+.git
+.env
+.env.*
+!.env.example
+apps/contracts/out
+apps/contracts/cache
+apps/contracts/broadcast
+.cursor
+**/.turbo
+coverage
+*.log
