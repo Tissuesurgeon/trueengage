@@ -11,7 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 loadEnvFile(resolve(__dirname, '../../../.env'), { override: true });
 loadEnvFile(resolve(__dirname, '../.env'), { override: true });
 loadEnvFile(resolve(__dirname, '../.env.local'), { override: true });
-import { connectDatabaseWithRetry, disconnectPrisma } from './db/client.js';
+import { connectDatabaseWithRetry, databaseTarget, disconnectPrisma } from './db/client.js';
 import { registerRoutes } from './routes/index.js';
 import { AgentOrchestrator } from './services/agent-orchestrator.js';
 import { startChainIndexer } from './services/chain-indexer.js';

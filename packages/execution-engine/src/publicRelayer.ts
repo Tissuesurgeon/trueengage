@@ -9,7 +9,7 @@ const STATUS_MAX_POLLS = 60;
 export interface PublicRelayerConfig {
   relayerUrl?: string;
   chainId?: number;
-  usdcAddress: Hex;
+  usdcAddress?: Hex;
 }
 
 type RelayerCapabilities = {
@@ -213,6 +213,10 @@ export async function payoutViaPublicRelayer(
   recipient: Hex,
   amountUsdc: number,
 ): Promise<Hex> {
+  if (!config.usdcAddress) {
+    throw new Error('USDC_ADDRESS not configured for 1Shot public relayer');
+  }
+
   const url = relayerUrl(config);
   const info = await getPublicRelayerInfo(config);
   const feeData = await getFeeData(config, config.usdcAddress);

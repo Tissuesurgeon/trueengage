@@ -27,10 +27,10 @@ COPY packages/campaign-engine packages/campaign-engine
 COPY packages/execution-engine packages/execution-engine
 COPY packages/smart-account-engine packages/smart-account-engine
 COPY apps/backend apps/backend
-RUN pnpm turbo run build --filter=@trueengage/backend...
 WORKDIR /app/apps/backend
 RUN pnpm exec prisma generate
 WORKDIR /app
+RUN pnpm turbo run build --filter=@trueengage/backend...
 RUN pnpm deploy --filter @trueengage/backend --prod /prod/backend
 
 FROM base AS runner

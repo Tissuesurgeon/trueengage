@@ -9,6 +9,7 @@ import {
   countApprovedParticipants,
   syncParticipantCount,
 } from '../services/participant-count.js';
+import { routeParam } from '../utils/routeParam.js';
 
 function mapSubmission(s: {
   id: string;
@@ -103,8 +104,9 @@ export function submissionsRouter(orchestrator: AgentOrchestrator): IRouter {
   }));
 
   router.get('/submissions/:id', asyncHandler(async (req, res) => {
+    const id = routeParam(req.params.id);
     const submission = await prisma.submission.findUnique({
-      where: { id: req.params.id },
+      where: { id },
       include: { verification: true, transaction: true, campaign: true },
     });
     if (!submission) return res.status(404).json({ error: 'Submission not found' });
@@ -120,8 +122,9 @@ export function submissionsRouter(orchestrator: AgentOrchestrator): IRouter {
     const parsed = VerifySubmissionSchema.safeParse(req.body);
     if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
 
+    const id = routeParam(req.params.id);
     const submission = await prisma.submission.findUnique({
-      where: { id: req.params.id },
+      where: { id },
       include: { campaign: true },
     });
     if (!submission) return res.status(404).json({ error: 'Submission not found' });

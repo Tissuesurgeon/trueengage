@@ -90,5 +90,5 @@ export type SocketEvent =
   | { type: 'verificationStarted'; submissionId: string }
   | { type: 'verificationCompleted'; submissionId: string; result: VerificationResult }
   | { type: 'paymentExecuted'; submissionId: string; result: PaymentResult }
-  | { type: 'campaignUpdated'; campaign: Campaign }
+  | { type: 'campaignUpdated'; campaign: Partial<Campaign> & { id: string } }
   | { type: 'agentDecision'; decision: AgentDecision };
