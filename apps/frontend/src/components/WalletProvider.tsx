@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { api } from '@/lib/api';
@@ -49,6 +50,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [wallet, setWallet] = useState<WalletState | null>(null);
   const [status, setStatus] = useState<WalletStatus>('disconnected');
   const [hydrated, setHydrated] = useState(false);
+  const connectingRef = useRef(false);
 
   useEffect(() => {
     const stored = readStoredWallet();
@@ -66,6 +68,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const connect = useCallback(async () => {
+    connectingRef.current = true;
     setStatus('connecting');
     try {
       const { ownerEoa, smartAccountAddress, chainId } = await connectMetaMask();
@@ -86,6 +89,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       setStatus(wallet ? 'connected' : 'disconnected');
       throw err;
+    } finally {
+      connectingRef.current = false;
     }
   }, [wallet]);
 
@@ -95,6 +100,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     if (!ethereum?.on) return;
 
     const handleAccountsChanged = (accounts: unknown) => {
+      if (connectingRef.current) return;
       const list = accounts as string[];
       if (!list?.length) {
         disconnect();
@@ -106,6 +112,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     };
 
     const handleChainChanged = () => {
+      if (connectingRef.current) return;
       disconnect();
     };
 

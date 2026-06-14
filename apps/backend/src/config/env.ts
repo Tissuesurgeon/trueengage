@@ -3,6 +3,7 @@ import { z } from 'zod';
 const envSchema = z.object({
   PORT: z.coerce.number().default(4000),
   FRONTEND_URL: z.string().default('http://localhost:3000'),
+  CORS_EXTRA_ORIGINS: z.string().optional(),
   DATABASE_URL: z.string(),
   VENICE_API_KEY: z.string().optional(),
   VENICE_API_URL: z.string().default('https://api.venice.ai/api/v1/chat/completions'),

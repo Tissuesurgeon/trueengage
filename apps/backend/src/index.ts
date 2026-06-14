@@ -21,14 +21,37 @@ const env = loadEnv();
 const app = express();
 const httpServer = createServer(app);
 
-const corsOrigins = [env.FRONTEND_URL, 'http://localhost:3000'];
-app.use(cors({ origin: corsOrigins }));
+const corsOrigins = [
+  env.FRONTEND_URL,
+  'http://localhost:3000',
+  ...(env.CORS_EXTRA_ORIGINS?.split(',').map((s) => s.trim()).filter(Boolean) ?? []),
+];
+
+function isAllowedCorsOrigin(origin: string | undefined): boolean {
+  if (!origin) return true;
+  if (corsOrigins.includes(origin)) return true;
+  // Vercel production + preview deploys
+  if (/^https:\/\/[\w-]+\.vercel\.app$/.test(origin)) return true;
+  return false;
+}
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (isAllowedCorsOrigin(origin)) {
+        callback(null, origin ?? true);
+        return;
+      }
+      callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+  }),
+);
 app.use(express.json({ limit: '10mb' }));
 
 const orchestrator = new AgentOrchestrator(env);
 registerRoutes(app, orchestrator, env);
 app.use(errorHandler);
-initSocket(httpServer, corsOrigins);
+initSocket(httpServer, isAllowedCorsOrigin);
 startChainIndexer(env);
 
 async function start() {

@@ -101,20 +101,6 @@ export async function requestMetaMaskAccounts(): Promise<Address> {
 
   await ensureSepoliaNetwork();
 
-  try {
-    await ethereum.request({
-      method: 'wallet_requestPermissions',
-      params: [{ eth_accounts: {} }],
-    });
-  } catch (err) {
-    const code = typeof err === 'object' && err !== null ? (err as { code?: number }).code : undefined;
-    if (code !== 4001) {
-      // Permission picker unavailable on some builds — continue with eth_requestAccounts.
-    } else {
-      throw new Error(parseWalletError(err));
-    }
-  }
-
   const accounts = (await ethereum.request({ method: 'eth_requestAccounts' })) as Address[];
   if (!accounts[0]) throw new Error('No MetaMask account selected');
   return accounts[0];

@@ -61,6 +61,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       await connect();
     } catch (e) {
       console.error(e);
+      const message =
+        e instanceof Error ? e.message : 'Failed to connect wallet. Check the browser console.';
+      alert(message);
     } finally {
       setConnecting(false);
     }

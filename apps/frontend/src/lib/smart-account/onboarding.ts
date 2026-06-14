@@ -18,8 +18,18 @@ export async function connectMetaMask(): Promise<{
 }> {
   try {
     const ownerEoa = await requestMetaMaskAccounts();
-    const { address: smartAccountAddress } = await createCreatorSmartAccount(ownerEoa);
-    return { ownerEoa, smartAccountAddress, chainId: SEPOLIA_CHAIN_ID };
+    try {
+      const { address: smartAccountAddress } = await Promise.race([
+        createCreatorSmartAccount(ownerEoa),
+        new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error('Smart account setup timed out')), 20_000);
+        }),
+      ]);
+      return { ownerEoa, smartAccountAddress, chainId: SEPOLIA_CHAIN_ID };
+    } catch (err) {
+      console.warn('[wallet] Smart account preview failed — connected with EOA only:', err);
+      return { ownerEoa, smartAccountAddress: ownerEoa, chainId: SEPOLIA_CHAIN_ID };
+    }
   } catch (err) {
     throw new Error(parseWalletError(err));
   }

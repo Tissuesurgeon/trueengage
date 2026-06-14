@@ -19,7 +19,9 @@ export function WalletConnect() {
       await connect();
     } catch (err) {
       console.error(err);
-      alert('Failed to connect wallet');
+      const message =
+        err instanceof Error ? err.message : 'Failed to connect wallet. Check the browser console.';
+      alert(message);
     } finally {
       setLoading(false);
     }
