@@ -26,18 +26,38 @@ export interface DelegationPaymentConfig {
   chainId?: number;
 }
 
+function asHexField(value: unknown, field: string): `0x${string}` {
+  if (typeof value !== 'string' || !value.startsWith('0x')) {
+    throw new Error(`Invalid signed delegation field: ${field}`);
+  }
+  return value as `0x${string}`;
+}
+
+/** Normalize MetaMask kit delegation (supports delegate/delegator or from/to aliases). */
 function assertSignedDelegation(value: unknown): StoredSignedDelegation {
   if (!value || typeof value !== 'object') {
     throw new Error('Missing signed delegation in policy');
   }
   const d = value as Record<string, unknown>;
-  const required = ['delegate', 'delegator', 'authority', 'caveats', 'salt', 'signature'] as const;
-  for (const key of required) {
-    if (typeof d[key] !== 'string' || !(d[key] as string).startsWith('0x')) {
-      throw new Error(`Invalid signed delegation field: ${key}`);
-    }
+
+  const delegate = d.delegate ?? d.to;
+  const delegator = d.delegator ?? d.from;
+  const authority = d.authority ?? '0x0000000000000000000000000000000000000000000000000000000000000000';
+  const signature = d.signature;
+  const salt = d.salt ?? '0x00';
+
+  if (!Array.isArray(d.caveats)) {
+    throw new Error('Invalid signed delegation field: caveats');
   }
-  return value as StoredSignedDelegation;
+
+  return {
+    delegate: asHexField(delegate, 'delegate'),
+    delegator: asHexField(delegator, 'delegator'),
+    authority: asHexField(authority, 'authority'),
+    caveats: d.caveats as StoredSignedDelegation['caveats'],
+    salt: asHexField(salt, 'salt'),
+    signature: asHexField(signature, 'signature'),
+  };
 }
 
 export function parseSignedDelegation(policy: Record<string, unknown>): StoredSignedDelegation {

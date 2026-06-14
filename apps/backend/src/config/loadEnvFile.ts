@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 
-export function loadEnvFile(path: string): void {
+export function loadEnvFile(path: string, options?: { override?: boolean }): void {
   try {
     const content = readFileSync(path, 'utf8');
     for (const line of content.split('\n')) {
@@ -19,7 +19,7 @@ export function loadEnvFile(path: string): void {
         value = value.slice(1, -1);
       }
 
-      if (process.env[key] === undefined) {
+      if (options?.override || process.env[key] === undefined) {
         process.env[key] = value;
       }
     }

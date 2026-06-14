@@ -41,13 +41,15 @@ export class AgentOrchestrator {
     deadline: string;
   }) {
     const result = validateCampaignInput(input);
-    await prisma.agentDecision.create({
-      data: {
-        role: 'campaign',
-        input: input as unknown as import('@prisma/client').Prisma.InputJsonValue,
-        output: result as unknown as import('@prisma/client').Prisma.InputJsonValue,
-      },
-    });
+    void prisma.agentDecision
+      .create({
+        data: {
+          role: 'campaign',
+          input: input as unknown as import('@prisma/client').Prisma.InputJsonValue,
+          output: result as unknown as import('@prisma/client').Prisma.InputJsonValue,
+        },
+      })
+      .catch((err) => console.warn('[agent] campaign decision log failed:', err));
     emitEvent({
       type: 'agentDecision',
       decision: {
@@ -147,7 +149,11 @@ export class AgentOrchestrator {
     if (policy) {
       try {
         signedDelegation = parseSignedDelegation(policy);
-      } catch {
+      } catch (err) {
+        console.warn(
+          '[PaymentAgent] Could not parse signedDelegation from campaign policy:',
+          err instanceof Error ? err.message : err,
+        );
         signedDelegation = undefined;
       }
     }

@@ -4,6 +4,7 @@ dist
 .turbo
 .env
 .env.local
+**/.env.local
 *.log
 apps/contracts/out
 apps/contracts/cache

@@ -34,6 +34,16 @@ export class PaymentAgent {
   ): Promise<PaymentResult & { path?: PaymentPath }> {
     const attempts: Array<{ path: PaymentPath; error: string }> = [];
 
+    if (!options?.signedDelegation) {
+      console.warn(
+        '[PaymentAgent] Skipping 1Shot public relayer — no signedDelegation (creator must grant permission)',
+      );
+    } else if (!this.config.usdcAddress || !this.config.relayerUrl) {
+      console.warn(
+        '[PaymentAgent] Skipping 1Shot public relayer — missing USDC_ADDRESS or ONESHOT_RELAYER_URL',
+      );
+    }
+
     if (options?.signedDelegation && this.config.usdcAddress && this.config.relayerUrl) {
       try {
         const txHash = await payoutViaPublicRelayer(
